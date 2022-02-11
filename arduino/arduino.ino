@@ -13,12 +13,18 @@ int x;
 
 #define EN A0
 
+#define BACKWARD 1
+#define FORWARD -1 
+#define TRIGGER_MOVE 1 
+#define CANCEL_MOVE -1
+
+
 HX711 scale;
 
 void moveMotor(int mode) {
   digitalWrite(EN,HIGH);
 
-  if (mode == 1) { 
+  if (mode == BACKWARD) { 
     digitalWrite(INA,HIGH); //Backward
     digitalWrite(INB,LOW);
   } else { 
@@ -47,23 +53,26 @@ void setup() {
   pinMode(EN,OUTPUT);
   
   digitalWrite(LED_BUILTIN, LOW); 
-  moveMotor(1);
+  moveMotor(BACKWARD);
 }
 
 
 
 void loop() {
  if (scale.get_units() > 0.333) { 
-    digitalWrite(LED_BUILTIN, HIGH);  
+   digitalWrite(LED_BUILTIN, HIGH);  
    while (!Serial.available()); // wait for input
    x = Serial.readString().toInt();
-   if (x == 1) { 
+   if (x == TRIGGER_MOVE) { 
     Serial.print(x + 1);
-
+    
     // move forward and then back
-    moveMotor(-1); 
-    moveMotor(1);
-   } else { 
+    moveMotor(FORWARD); 
+    moveMotor(BACKWARD);
+   } else if (x == CANCEL_MOVE) {
+    Serial.println("Cancelling move");
+   }
+   else { 
     Serial.println("Error; Command not found"); 
    }
    digitalWrite(LED_BUILTIN, LOW);    
