@@ -39,6 +39,17 @@ void moveMotor(int mode) {
   digitalWrite(EN,LOW);  
 }
 
+void moveMotorBackFive() { 
+  digitalWrite(EN,HIGH);
+  digitalWrite(INA,HIGH); //Backward
+  digitalWrite(INB,LOW);
+
+  analogWrite(PWM,255); //Speed control of Motor
+  delay(5000);
+  analogWrite(PWM, 0); 
+  digitalWrite(EN,LOW);  
+}
+
 void setup() {
   Serial.begin(115200);
   Serial.setTimeout(1);
@@ -53,7 +64,7 @@ void setup() {
   pinMode(EN,OUTPUT);
   
   digitalWrite(LED_BUILTIN, LOW); 
-  moveMotor(BACKWARD);
+  moveMotorBackFive();
 }
 
 
