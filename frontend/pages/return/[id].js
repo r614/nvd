@@ -29,6 +29,15 @@ const dataTable = {
       },
     ],
   },
+  4567: {
+    store: "Aritzia",
+    items: [
+      {
+        itemName: "Some Aritzia Dress (M)",
+        price: "$90.57",
+      },
+    ],
+  },
 };
 
 export default function Return() {

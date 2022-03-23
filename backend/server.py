@@ -4,9 +4,10 @@ from fastapi.responses import FileResponse
 from backend.main import ARDUINO_INSTRUCTION_KEY, ARDUINO_STATUS_KEY, ARDUINO_STATUS, write_instruction_arduino, sync_arduino_state
 from backend.utils import take_snapshot
 import threading
+import uvicorn 
 
 class BackgroundSync(threading.Thread):
-    def run(self):
+    def run(self, *args,**kwargs):
         sync_arduino_state()
   
 app = FastAPI()
@@ -37,3 +38,9 @@ async def cancel():
     if ARDUINO_STATUS in ["disabled", "ready", "moving"]: 
         return
     write_instruction_arduino(ARDUINO_INSTRUCTION_KEY["cancel_move"])
+
+
+if __name__ == "__main__": 
+    sync_service = BackgroundSync()
+    sync_service.start()
+    uvicorn.run(app, host="0.0.0.0", port=8000)

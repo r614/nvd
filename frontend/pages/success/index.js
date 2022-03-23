@@ -1,6 +1,4 @@
 import { useRouter } from "next/router";
-import { useEffect } from 'react'
-
 import styles from "../../styles/Home.module.css";
 import {
   SimpleGrid,
@@ -12,31 +10,21 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-export default function Place() {
+export default function Success() {
   const router = useRouter();
-
-  const checkArmAndMove = async () => {
-    waitForArm().then(() => {
-      await moveArduino();
-      await sleep(30000);
-      router.push("/returnFin");
-    });
-  };
-
-  useEffect(checkArmAndMove, []);
 
   return (
     <SimpleGrid height="100vh">
       <VStack height="100%" marginTop="20%">
         <Center>
           <Heading>
-            Place the item on the kiosk with the label facing up
+            You have finished returning all of your items! 
           </Heading>
         </Center>
         <Box alignContent="left">
           <a href="/">
             <button className={styles.grayButton}>
-              <Text> Cancel Return </Text>
+              <Text> Exit </Text>
             </button>
           </a>
         </Box>
