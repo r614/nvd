@@ -51,14 +51,14 @@ void moveMotor(int mode)
   digitalWrite(EN, LOW);
 }
 
-void moveMotorBackFive()
+void moveMotorBackTwo()
 {
   digitalWrite(EN, HIGH);
   digitalWrite(INA, HIGH); // Backward
   digitalWrite(INB, LOW);
 
   analogWrite(PWM, 255); // Speed control of Motor
-  delay(5000);
+  delay(2000);
   analogWrite(PWM, 0);
   digitalWrite(EN, LOW);
 }
@@ -78,7 +78,7 @@ void setup()
   pinMode(EN, OUTPUT);
 
   digitalWrite(LED_BUILTIN, LOW);
-  moveMotorBackFive();
+  moveMotorBackTwo();
 
   status = ARDUINO_READY;
   Serial.println(status);
@@ -120,6 +120,10 @@ void loop()
   if (scale.get_units() > 0.333)
   {
     // Weight Sensor is Armed
+
+    status = ARDUINO_ARMED; 
+    Serial.println(status); 
+    
     digitalWrite(LED_BUILTIN, HIGH);
     sync();
     digitalWrite(LED_BUILTIN, LOW);

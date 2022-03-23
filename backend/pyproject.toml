@@ -11,6 +11,8 @@ pyserial = "3.5"
 opencv-python = "4.5.5.64"
 Pillow = "9.0.1"
 loguru = "0.6.0"
+uvicorn = "0.17.6"
+aiofiles = "0.8.0"
 
 [tool.poetry.dev-dependencies]
 black = "*"

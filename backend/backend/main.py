@@ -1,6 +1,7 @@
 import warnings
 from typing import Union
 import serial
+from serial.tools import list_ports
 import time
 
 from backend.utils import take_snapshot
@@ -14,9 +15,11 @@ ARDUINO_STATUS = ARDUINO_STATUS_KEY[-1]
 def search_and_connect_arduino():
     arduino_ports = [
         p.device
-        for p in serial.tools.list_ports.comports()
+        for p in list_ports.comports()
         if 'Arduino' in p.description
+        or ((p.manufacturer is not None) and 'Arduino' in p.manufacturer)
     ]
+
     if not arduino_ports:
         raise IOError("No Arduino found")
     if len(arduino_ports) > 1:
@@ -29,11 +32,15 @@ ser = search_and_connect_arduino()
 def parse_message(binary_string):
     return int(binary_string.decode('ascii').strip().split("\n")[0])
 
+
+def get_arduino_status():
+    return ARDUINO_STATUS
+
 def sync_arduino_state(): 
-    global ARDUINO_STATUS
     while True: 
         line = ser.readline()
         if line:
+            global ARDUINO_STATUS
             ARDUINO_STATUS = ARDUINO_STATUS_KEY[parse_message(line)]
             logger.info(f"Updated Arduino state to: {ARDUINO_STATUS}")
         time.sleep(0.5)
@@ -41,13 +48,15 @@ def sync_arduino_state():
 def write_instruction_arduino(instruction: int) -> Union[None, int]:
     global ARDUINO_STATUS
 
+    logger.info(f"Trying to send instruction: {instruction}")
+
     if instruction == ARDUINO_INSTRUCTION_KEY["request_status"]:
-        ser.write(bytes(instruction, 'utf-8'))
+        ser.write(bytes(str(instruction), 'utf-8'))
         time.sleep(0.05)
         ARDUINO_STATUS = parse_message(ser.readline())
         return ARDUINO_STATUS
     
-    ser.write(bytes(instruction, 'utf-8'))
+    ser.write(bytes(str(instruction), 'utf-8'))
 
     logger.info(f"Wrote instruction {instruction} to Arduino")
 

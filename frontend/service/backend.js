@@ -1,4 +1,4 @@
-const BASE_URL = "0.0.0.0:8000"
+const BASE_URL = "http://0.0.0.0:8010"
 
 const moveArduino = async () => {
     const res = await fetch(`${BASE_URL}/move`)
@@ -6,9 +6,10 @@ const moveArduino = async () => {
 }
 
 const pingArduino = async () => { 
-    const res = await fetch(`${BASE_URL}/status`)
-    console.log(res);
-    return res.json()["status"]
+    const res = await fetch(`${BASE_URL}`)
+    const body = await res.json()
+    console.log(body);
+    return body["status"]
 }
 
 const sleep = (time) => {
@@ -37,4 +38,12 @@ const waitForArm = async () => {
 const cancelTrigger = async () => { 
     const res = await fetch(`${BASE_URL}/cancel`) 
     console.log(res);
+}
+
+module.exports = { 
+    waitForArm,
+    moveArduino,
+    cancelTrigger, 
+    pingArduino,
+    sleep
 }
